@@ -2,7 +2,6 @@ local curl = require("nvimrest.curl")
 
 local template = { "method: GET",
     "url: https://httpbin.org/get",
-    "header: User-Agent: nvimrest/1.0",
     "header: Accept: *",
     "body: {\"foo\": \"bar\"}"
 }
