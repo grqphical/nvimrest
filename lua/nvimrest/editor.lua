@@ -10,11 +10,23 @@ local M = {}
 function M:parse_request()
     local lines = vim.api.nvim_buf_get_lines(M.buf, 0, -1, false)
 
-    local request = {}
+    local request = {
+        url = "",
+        method = "",
+        header = {},
+    }
 
     for i, line in ipairs(lines) do
         if string.match(line, "^url") then
-            request.url = string.sub(line, 1, #"url: ")
+            request.url = string.sub(line, #"url: ", #line)
+        elseif string.match(line, "^method") then
+            request.method = string.sub(line, #"method: ", #line)
+        elseif string.match(line, "^header") then
+            local substring = string.sub(line, 1, #"header: ")
+            local split = string.gmatch(substring, "[^:]+")
+            local key = split[1]
+            local value = split[2]
+            request.header[key] = value
         end
     end
 
@@ -33,7 +45,7 @@ function M:create_http_editor()
         buffer = M.buf,
         callback = function()
             local request = M:parse_request()
-            print(request.url)
+            print(request)
         end,
     })
 end
