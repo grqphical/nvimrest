@@ -33,7 +33,7 @@ function M:do_request(request)
         end
 
         print(out.stdout)
-    end)
+    end):wait(1000)
 end
 
 return M
