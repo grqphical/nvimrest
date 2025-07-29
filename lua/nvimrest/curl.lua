@@ -14,15 +14,12 @@ if curl_process_result.code ~= 0 then
     return
 end
 
-local curl_cmd = "curl -x %s"
+local curl_cmd = "curl -X %s"
 
 local M = {}
 
 local on_exit = function(obj)
-    print(obj.code)
-    print(obj.signal)
     print(obj.stdout)
-    print(obj.stderr)
 end
 
 function M:do_request(request)
@@ -34,7 +31,7 @@ function M:do_request(request)
 
     cmd = cmd .. " " .. request.url
 
-    local result = vim.system(split(cmd, " "), { text = true }, on_exit)
+    vim.system(split(cmd, " "), { text = true }, on_exit)
 end
 
 return M
