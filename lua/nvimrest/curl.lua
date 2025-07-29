@@ -27,7 +27,7 @@ function M:do_request(request)
 
     cmd = cmd .. " " .. request.url
 
-    vim.system(split(cmd, "\n"), { text = true }, function(out)
+    vim.system(split(cmd, " "), { text = true }, function(out)
         if out.code ~= 0 then
             error(string.format("error while running HTTP request (curl exit code: %d): %s", out.code, out.stderr))
         end
