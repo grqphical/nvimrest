@@ -16,16 +16,26 @@ function M:parse_request()
         header = {},
     }
 
-    for i, line in ipairs(lines) do
+    for _, line in ipairs(lines) do
         if string.match(line, "^url") then
             request.url = string.sub(line, #"url: ", #line)
         elseif string.match(line, "^method") then
             request.method = string.sub(line, #"method: ", #line)
         elseif string.match(line, "^header") then
             local substring = string.sub(line, 1, #"header: ")
-            local split = string.gmatch(substring, "[^:]+")
-            local key = split[1]
-            local value = split[2]
+            local key = ""
+            local value = ""
+
+            local i = 0
+            for part in string.gmatch(substring, "[^:]+") do
+                if i == 1 then
+                    key = part
+                elseif i == 2 then
+                    value = part
+                end
+                i = i + 1
+            end
+
             request.header[key] = value
         end
     end
