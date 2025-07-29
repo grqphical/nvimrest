@@ -24,7 +24,8 @@ function M:parse_request()
         elseif string.match(line, "^method") then
             request.method = string.sub(line, #"method: " + 1, #line)
         elseif string.match(line, "^header") then
-            request.header = table.insert(request.header, string.sub(line, #"header: " + 1, #line))
+            local header = request.header or {}
+            request.header = table.insert(header, string.sub(line, #"header: " + 1, #line))
         end
     end
 
