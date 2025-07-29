@@ -27,13 +27,11 @@ function M:do_request(request)
 
     cmd = cmd .. " " .. request.url
 
-    vim.system(split(cmd, " "), { text = true }, function(out)
-        if out.code ~= 0 then
-            error(string.format("error while running HTTP request (curl exit code: %d): %s", out.code, out.stderr))
-        end
-
-        print(out.stdout)
-    end):wait(1000)
+    local result = vim.system(split(cmd, " "), { text = true }):wait(1000)
+    if result.code ~= 0 then
+        error(string.format("failed to run HTTP request (curl exit code: %d): %s)", result.code, result.stdout))
+    end
+    print(result.stdout)
 end
 
 return M
