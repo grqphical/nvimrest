@@ -1,3 +1,5 @@
+local curl = require("curl")
+
 local template = { "method: GET",
     "url: https://httpbin.org/get",
     "header: User-Agent: nvimrest/1.0",
@@ -18,25 +20,11 @@ function M:parse_request()
 
     for _, line in ipairs(lines) do
         if string.match(line, "^url") then
-            request.url = string.sub(line, #"url: ", #line)
+            request.url = string.sub(line, #"url: " + 1, #line)
         elseif string.match(line, "^method") then
-            request.method = string.sub(line, #"method: ", #line)
+            request.method = string.sub(line, #"method: " + 1, #line)
         elseif string.match(line, "^header") then
-            local substring = string.sub(line, 1, #"header: ")
-            local key = ""
-            local value = ""
-
-            local i = 0
-            for part in string.gmatch(substring, "[^:]+") do
-                if i == 1 then
-                    key = part
-                elseif i == 2 then
-                    value = part
-                end
-                i = i + 1
-            end
-
-            request.header[key] = value
+            request.header = table.insert(request.header, string.sub(line, #"header: " + 1, #line))
         end
     end
 
@@ -55,9 +43,7 @@ function M:create_http_editor()
         buffer = M.buf,
         callback = function()
             local request = M:parse_request()
-            for k, v in pairs(request) do
-                print(k, v)
-            end
+            curl:do_request(request)
         end,
     })
 end
