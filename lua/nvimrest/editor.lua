@@ -1,4 +1,4 @@
-local curl = require("curl")
+local curl = require("nvimrest.curl")
 
 local template = { "method: GET",
     "url: https://httpbin.org/get",
