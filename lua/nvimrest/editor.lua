@@ -55,7 +55,9 @@ function M:create_http_editor()
         buffer = M.buf,
         callback = function()
             local request = M:parse_request()
-            print(request)
+            for k, v in pairs(request) do
+                print(k, v)
+            end
         end,
     })
 end
