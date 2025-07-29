@@ -1,4 +1,4 @@
-local editor = require("editor")
+local editor = require("nvimrest.editor")
 
 local M = {}
 
