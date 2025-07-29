@@ -1,3 +1,11 @@
+local function split(str, delimiter)
+    local result = {}
+    for part in string.gmatch(str, "[^" .. delimiter .. "]+") do
+        table.insert(result, part)
+    end
+    return result
+end
+
 -- make sure the user has curl installed
 local curl_process_result = vim.system({ 'curl', '--version' }):wait(500)
 
@@ -18,7 +26,9 @@ function M:do_request(request)
     end
 
     cmd = cmd .. " " .. request.url
-    print(cmd)
+
+    local curl_result = vim.fn.system(split(cmd))
+    print(curl_result)
 end
 
 return M
