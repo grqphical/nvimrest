@@ -7,21 +7,33 @@ local template = { "method: GET",
 
 local M = {}
 
-function M:create_http_editor()
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.bo[buf].buftype = ""
-    vim.api.nvim_buf_set_name(buf, "NvimRest")
+function M:parse_request()
+    local lines = vim.api.nvim_buf_get_lines(M.buf, 0, -1, false)
 
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, template)
-    vim.api.nvim_set_current_buf(buf)
+    local request = {}
+
+    for i, line in ipairs(lines) do
+        if string.match(line, "^url") then
+            request.url = string.sub(line, 1, #"url: ")
+        end
+    end
+
+    return request
+end
+
+function M:create_http_editor()
+    M.buf = vim.api.nvim_create_buf(false, true)
+    vim.bo[M.buf].buftype = ""
+    vim.api.nvim_buf_set_name(M.buf, "NvimRest")
+
+    vim.api.nvim_buf_set_lines(M.buf, 0, -1, false, template)
+    vim.api.nvim_set_current_buf(M.buf)
 
     vim.api.nvim_create_autocmd("BufWriteCmd", {
-        buffer = buf,
-        callback = function(args)
-            local lines = vim.api.nvim_buf_get_lines(args.buf, 0, -1, false)
-            local text = table.concat(lines, "\n")
-            print("User tried to save! Full text:")
-            print(text)
+        buffer = M.buf,
+        callback = function()
+            local request = M:parse_request()
+            print(request.url)
         end,
     })
 end
