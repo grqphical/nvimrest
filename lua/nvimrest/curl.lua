@@ -18,6 +18,13 @@ local curl_cmd = "curl -x %s"
 
 local M = {}
 
+local on_exit = function(obj)
+    print(obj.code)
+    print(obj.signal)
+    print(obj.stdout)
+    print(obj.stderr)
+end
+
 function M:do_request(request)
     local cmd = string.format(curl_cmd, request.method)
 
@@ -27,11 +34,7 @@ function M:do_request(request)
 
     cmd = cmd .. " " .. request.url
 
-    local result = vim.system(split(cmd, " "), { text = true }):wait(1000)
-    if result.code ~= 0 then
-        error(string.format("failed to run HTTP request (curl exit code: %d): %s)", result.code, result.stdout))
-    end
-    print(result.stdout)
+    local result = vim.system(split(cmd, " "), { text = true }, on_exit)
 end
 
 return M
